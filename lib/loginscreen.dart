@@ -71,16 +71,16 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          Image.asset(
-                            _isPressed ? 'images/insta.png' : 'images/meta1.png',
-                            height: 100,
-                            width: 100,
-                          ),
-                          Image.asset(
-                            _isPressed ? 'images/meta1.png' : 'images/insta.png',
-                            height: 100,
-                            width: 100,
-                          ),
+                          // Image.asset(
+                          //   _isPressed ? 'images/insta.png' : 'images/meta1.png',
+                          //   height: 100,
+                          //   width: 100,
+                          // ),
+                          // Image.asset(
+                          //   _isPressed ? 'images/meta1.png' : 'images/insta.png',
+                          //   height: 100,
+                          //   width: 100,
+                          //),
                         ],
                       ),
                     ),
