@@ -17,8 +17,3 @@ Welcome to the Online Grocery Shop App! This mobile application, developed using
 
 After starting the app, you can start using the Online Grocery Shop App on your emulator or physical device.
 
-
-## License
-
-This project is licensed under the MIT License.
-
