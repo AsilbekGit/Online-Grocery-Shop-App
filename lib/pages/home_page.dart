@@ -73,20 +73,20 @@ class _HomePageState extends State<HomePage> {
             padding: EdgeInsets.symmetric(horizontal: 24.0),
             child: Text('Good morning,'),
           ),
-
-          const SizedBox(height: 4),
+          //
+          // const SizedBox(height: 4),
 
           // Let's order fresh items for you
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0),
-            child: Text(
-              "Let's order fresh items for you",
-              style: GoogleFonts.notoSerif(
-                fontSize: 36,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
+          // Padding(
+          //   padding: const EdgeInsets.symmetric(horizontal: 24.0),
+          //   child: Text(
+          //     "Let's order fresh items for you",
+          //     style: GoogleFonts.notoSerif(
+          //       fontSize: 36,
+          //       fontWeight: FontWeight.bold,
+          //     ),
+          //   ),
+          // ),
 
           const SizedBox(height: 24),
 
@@ -115,11 +115,10 @@ class _HomePageState extends State<HomePage> {
               builder: (context, value, child) {
                 return GridView.builder(
                   padding: const EdgeInsets.all(12),
-                  physics: const NeverScrollableScrollPhysics(),
                   itemCount: value.shopItems.length,
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
-                    childAspectRatio: 1 / 1.2,
+                    childAspectRatio: 1 / 1.1,
                   ),
                   itemBuilder: (context, index) {
                     return GroceryItemTile(
