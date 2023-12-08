@@ -49,7 +49,7 @@ class _ProductDescriptionPageState extends State<ProductDescriptionPage> {
             SizedBox(height: 10),
             Text(
               'Ferrero Rocher Premium Choclates 24 Pieces, 300 g',
-              style: TextStyle(fontSize: 16.0, color: Colors.blue), // Reduced font size here
+              style: TextStyle(fontSize: 16.0, color: Colors.blue),
             ),
             Text(
               'Brand\tFerrero Rocher\nItem Form\tBall\nOccasion\tChristmas, Congratulations, Birthday\nChocolate Type\tMilk\nFlavor\tChocolate Hazelnut',
@@ -59,11 +59,11 @@ class _ProductDescriptionPageState extends State<ProductDescriptionPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Text(
-                  'Rating: $_rating', // replace with your actual product rating
+                  'Rating: $_rating',
                   style: TextStyle(color: Colors.yellow),
                 ),
                 Text(
-                  'Orders Today: $_orders', // replace with your actual number of orders
+                  'Orders Today: $_orders',
                   style: TextStyle(color: Colors.red),
                 ),
               ],
