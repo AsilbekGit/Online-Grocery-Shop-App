@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:project/pages/Sign_in.dart';
 import 'package:project/pages/productDescriptionPage.dart';
 import 'model/cart_model.dart';
 import 'package:provider/provider.dart';
 import 'pages/intro_screen.dart';
+import 'pages/Sign_up.dart';
 
 void main() {
   runApp(const MyApp());
@@ -17,7 +19,7 @@ class MyApp extends StatelessWidget {
       create: (context) => CartModel(),
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: IntroScreen(),
+        home: SignUpScreen(),
       ),
     );
   }
