@@ -71,7 +71,7 @@ class _HomePageState extends State<HomePage> {
           // good morning bro
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 24.0),
-            child: Text('Good morning,'),
+            child: Text('Good morning, Max', style: TextStyle(fontSize: 25)),
           ),
           //
           // const SizedBox(height: 4),
@@ -88,12 +88,12 @@ class _HomePageState extends State<HomePage> {
           //   ),
           // ),
 
-          const SizedBox(height: 24),
+          // const SizedBox(height: 24),
 
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 24.0),
-            child: Divider(),
-          ),
+          // const Padding(
+          //   padding: EdgeInsets.symmetric(horizontal: 24.0),
+          //   child: Divider(),
+          // ),
 
           const SizedBox(height: 24),
 
