@@ -1,76 +1,96 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:project/pages/home_page.dart';
 
-class SignInScreen extends StatefulWidget {
-  const SignInScreen({Key? key}) : super(key: key);
+import 'CustomButton.dart';
+import 'CustomTextField.dart';
+import 'Sign_up.dart';
 
-  @override
-  State<SignInScreen> createState() => _SignInScreenState();
-}
 
-class _SignInScreenState extends State<SignInScreen> {
+class SignInScreen extends StatelessWidget {
+  final _auth = FirebaseAuth.instance; // Initialize FirebaseAuth
+  late String email;
+  late String password;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.lightBlueAccent, // Background color of the screen
-      body: SafeArea(
-        child: SingleChildScrollView(
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.lightBlueAccent, Colors.white70],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: SafeArea(
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
-              children: [
-                SizedBox(height: 150),
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
                 Text(
-                  'Sign In',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white, // Text color
-                  ),
+                  'Login',
+                  style: TextStyle(fontSize: 32.0, fontWeight: FontWeight.bold,color: Colors.white),
                 ),
-                SizedBox(height: 20),
-                TextField(
-                  decoration: InputDecoration(
-                    labelText: 'Phone Number',
-                    prefixIcon: Icon(Icons.phone, color: Colors.white), // Phone icon
-                    labelStyle: TextStyle(color: Colors.white),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white),
-                    ),
-                  ),
-                  style: TextStyle(color: Colors.white),
-                  keyboardType: TextInputType.phone,
+                SizedBox(height: 50.0),
+                CustomTextField(
+                  labelText: 'Email',
+                  prefixIcon: Icons.email_outlined,
+                  keyboardType: TextInputType.emailAddress,
+                  onChanged: (value) {
+                    email = value; // Store the email value
+                  },
                 ),
                 SizedBox(height: 16),
-                TextField(
+                CustomTextField(
+                  labelText: 'Password',
+                  prefixIcon: Icons.lock_outline,
                   obscureText: true,
-                  decoration: InputDecoration(
-                    labelText: 'Password',
-                    prefixIcon: Icon(Icons.lock, color: Colors.white), // Lock icon
-                    labelStyle: TextStyle(color: Colors.white),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white),
-                    ),
-                  ),
-                  style: TextStyle(color: Colors.white),
+                  onChanged: (value) {
+                    password = value; // Store the password value
+                  },
                 ),
                 SizedBox(height: 30),
-                ElevatedButton(
-                  onPressed: () {
-                    // Add sign in logic here
+                CustomButton(
+                  onPressed: () async {
+                    try {
+                      final user = await _auth.signInWithEmailAndPassword(
+                        email: email,
+                        password: password,
+                      );
+                      if (user != null) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => HomePage()),
+                        );
+                      }
+                    } catch (e) {
+                      print(e);
+                    }
                   },
-                  child: Text('Sign In'),
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.white, // Button color
-                    onPrimary: Colors.black, // Text color on button
-                    fixedSize: const Size(300, 50),
-                  ),
+                  text: 'LOGIN',
+                ),
+                SizedBox(height: 20), // Add space between the buttons
+                Text('Or Sign Up Using'),
+                SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    Icon(Icons.facebook, size: 36.0, color: Colors.blue),
+                    Icon(Icons.air, size: 36.0, color: Colors.blue),
+                    Icon(Icons.g_translate, size: 36.0, color: Colors.blue),
+                  ],
+                ),
+                SizedBox(height: 50),
+                CustomButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => SignUpScreen()),
+                    );
+                  },
+                  text: 'SIGN UP',
                 ),
               ],
             ),
