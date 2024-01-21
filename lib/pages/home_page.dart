@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:project/pages/Sign_in.dart';
@@ -9,12 +10,11 @@ import 'cart_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
-
   @override
   State<HomePage> createState() => _HomePageState();
 }
-
 class _HomePageState extends State<HomePage> {
+  final user = FirebaseAuth.instance.currentUser;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,7 +29,7 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         title: Text(
-          'Sydney, Australia',
+          'Tashkent, Uzbekistan',
           style: TextStyle(
             fontSize: 16,
             color: Colors.grey[700],
@@ -43,7 +43,7 @@ class _HomePageState extends State<HomePage> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) =>  SignInScreen()),
+                  MaterialPageRoute(builder: (context) =>  ProfilePage(userId: user!.uid)),
                 );
               },
               child: Container(
@@ -62,7 +62,7 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.white70,
         onPressed: () => Navigator.push(
           context,
           MaterialPageRoute(
@@ -77,37 +77,16 @@ class _HomePageState extends State<HomePage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 48),
-
-          // good morning bro
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 24.0),
             child: Text('Good morning,'),
           ),
-          //
-          // const SizedBox(height: 4),
-
-          // Let's order fresh items for you
-          // Padding(
-          //   padding: const EdgeInsets.symmetric(horizontal: 24.0),
-          //   child: Text(
-          //     "Let's order fresh items for you",
-          //     style: GoogleFonts.notoSerif(
-          //       fontSize: 36,
-          //       fontWeight: FontWeight.bold,
-          //     ),
-          //   ),
-          // ),
-
           const SizedBox(height: 24),
-
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 24.0),
             child: Divider(),
           ),
-
           const SizedBox(height: 24),
-
-          // categories -> horizontal listview
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24.0),
             child: Text(
@@ -118,8 +97,6 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
-
-          // recent orders -> show last 3
           Expanded(
             child: Consumer<CartModel>(
               builder: (context, value, child) {
