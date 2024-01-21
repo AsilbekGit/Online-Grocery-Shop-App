@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:project/pages/Sign_in.dart';
 import 'package:project/pages/home_page.dart';
 import 'package:project/pages/intro_screen.dart';
+import 'package:project/pages/paymentPage.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -27,6 +29,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.green,
       ),
+      debugShowCheckedModeBanner: false,
       home: FutureBuilder(
         future: checkFirstSeen(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -34,7 +37,7 @@ class MyApp extends StatelessWidget {
             if (snapshot.data) {
               return IntroScreen();
             } else {
-              return HomePage();
+              return SignInScreen();
             }
           } else {
             return CircularProgressIndicator();

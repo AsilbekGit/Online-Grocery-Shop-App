@@ -1,51 +1,46 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-class ProfilePage extends StatelessWidget {
-  final String name;
-  final String email;
-  final String phoneNumber;
-  final String address;
+class ProfilePage extends StatefulWidget {
+  final String userId;
 
-  const ProfilePage({
-    Key? key,
-    required this.name,
-    required this.email,
-    required this.phoneNumber,
-    required this.address,
-  }) : super(key: key);
+  ProfilePage({Key? key, required this.userId}) : super(key: key);
+
+  @override
+  _ProfilePageState createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Profile'),
+        title: const Text("Profile Page"),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Name: $name',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 10),
-            Text(
-              'Email: $email',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 10),
-            Text(
-              'Phone Number: $phoneNumber',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 10),
-            Text(
-              'Address: $address',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-          ],
-        ),
+      body: FutureBuilder<DocumentSnapshot>(
+        future: _firestore.collection('users').doc(widget.userId).get(),
+        builder:
+            (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+          if (snapshot.hasError) {
+            return Text("Something went wrong");
+          }
+
+          if (snapshot.connectionState == ConnectionState.done) {
+            Map<String, dynamic> data = snapshot.data!.data() as Map<String, dynamic>;
+            return ListView(
+              children: <Widget>[
+                Text("Name: ${data['name']}"),
+                Text("Email: ${data['email']}"),
+                Text("Phone: ${data['phone']}"),
+                Text("Address: ${data['address']}"),
+              ],
+            );
+          }
+
+          return const CircularProgressIndicator();
+        },
       ),
     );
   }

@@ -87,7 +87,7 @@ class SignInScreen extends StatelessWidget {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => SignUpScreen()),
+                      MaterialPageRoute(builder: (context) => RegistrationForm()),
                     );
                   },
                   text: 'SIGN UP',
