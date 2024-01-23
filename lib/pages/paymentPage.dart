@@ -20,7 +20,7 @@ class _PaymentPageState extends State<PaymentPage> {
         padding: EdgeInsets.all(10.0),
         child: Column(
           children: <Widget>[
-            Text('40 000 som', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+            Text('', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
             SizedBox(height: 20),
             Text('We accept cards for payment:', style: TextStyle(fontSize: 18)),
             Row(
@@ -79,7 +79,7 @@ class _PaymentPageState extends State<PaymentPage> {
                 onPrimary: Colors.white,
               ),
               onPressed: () {},
-              child: Text('Pay 40 000 som'),
+              child: Text('Pay '),
             ),
             SizedBox(height: 20),
           ],
