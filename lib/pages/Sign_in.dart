@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
 import 'CustomButton.dart';
 import 'CustomTextField.dart';
 import 'Sign_up.dart';

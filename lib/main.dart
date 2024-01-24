@@ -4,6 +4,7 @@ import 'package:project/pages/Sign_in.dart';
 import 'package:project/pages/home_page.dart';
 import 'package:project/pages/intro_screen.dart';
 import 'package:project/pages/paymentPage.dart';
+import 'package:project/pages/productDescriptionPage.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

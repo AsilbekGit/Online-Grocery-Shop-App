@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:project/pages/Sign_in.dart';
@@ -131,8 +132,14 @@ class _RegistrationFormState extends State<RegistrationForm> {
                   ),
                   ElevatedButton(
                     onPressed: () async {
-                      final firestoreInstance = FirebaseFirestore.instance;{
-                        await firestoreInstance.collection('users').add({
+                      final firestoreInstance = FirebaseFirestore.instance;
+                      final auth = FirebaseAuth.instance;
+                      try {
+                        UserCredential userCredential = await auth.createUserWithEmailAndPassword(
+                          email: _emailController.text,
+                          password: _passwordController.text,
+                        );
+                        await firestoreInstance.collection('users').doc(userCredential.user?.uid).set({
                           'fullName': _nameController.text,
                           'email': _emailController.text,
                           'address': _addressController.text,
@@ -141,13 +148,22 @@ class _RegistrationFormState extends State<RegistrationForm> {
                           'confirmPassword': _confirmPasswordController.text,
                         });
                         Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => SignInScreen()),
+                          context,
+                          MaterialPageRoute(builder: (context) => SignInScreen()),
                         );
+                      } on FirebaseAuthException catch (e) {
+                        if (e.code == 'weak-password') {
+                          print('The password provided is too weak.');
+                        } else if (e.code == 'email-already-in-use') {
+                          print('The account already exists for that email.');
+                        }
+                      } catch (e) {
+                        print('some thing wrong ');
                       }
                     },
                     child: Text('Submit'),
-                  ),
+                  )
+
                 ],
               ),
             ),

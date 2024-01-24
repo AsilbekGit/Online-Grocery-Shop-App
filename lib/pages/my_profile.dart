@@ -30,13 +30,28 @@ class _ProfilePageState extends State<ProfilePage> {
 
           if (snapshot.connectionState == ConnectionState.done) {
             Map<String, dynamic> data = snapshot.data!.data() as Map<String, dynamic>;
-            return ListView(
-              children: <Widget>[
-                Text("Name: ${data['name']}"),
-                Text("Email: ${data['email']}"),
-                Text("Phone: ${data['phone']}"),
-                Text("Address: ${data['address']}"),
-              ],
+            return Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: ListView(
+                children: <Widget>[
+                  ListTile(
+                    title: Text("Name", style: TextStyle(color: Colors.blue)),
+                    subtitle: Text("${data['fullName']}", style: TextStyle(fontSize: 18)),
+                  ),
+                  ListTile(
+                    title: Text("Email", style: TextStyle(color: Colors.blue)),
+                    subtitle: Text("${data['email']}", style: TextStyle(fontSize: 18)),
+                  ),
+                  ListTile(
+                    title: Text("Phone", style: TextStyle(color: Colors.blue)),
+                    subtitle: Text("${data['phoneNumber']}", style: TextStyle(fontSize: 18)),
+                  ),
+                  ListTile(
+                    title: Text("Address", style: TextStyle(color: Colors.blue)),
+                    subtitle: Text("${data['address']}", style: TextStyle(fontSize: 18)),
+                  ),
+                ],
+              ),
             );
           }
 

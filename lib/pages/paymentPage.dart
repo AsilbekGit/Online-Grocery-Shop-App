@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../model/cart_model.dart';
 
 class PaymentPage extends StatefulWidget {
   @override
@@ -11,78 +14,75 @@ class _PaymentPageState extends State<PaymentPage> {
 
   @override
   Widget build(BuildContext context) {
+    final cartModel = Provider.of<CartModel>(context);
+    final total = cartModel.calculateTotal();
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.purple,
-        title: Text('Order payment',style: TextStyle(color:Colors.white),),
+        backgroundColor: Colors.white,
+        title: Text('Secure Payment', style: TextStyle(color: Colors.black)),
       ),
-      body: Padding(
-        padding: EdgeInsets.all(10.0),
-        child: Column(
-          children: <Widget>[
-            Text('', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-            SizedBox(height: 20),
-            Text('We accept cards for payment:', style: TextStyle(fontSize: 18)),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                Image.network(
-                  'https://humocard.uz/upload/medialibrary/208/8x0p9hi3h9jww0flwdm92dayhn0flulj/humo-logo-more.png',
-                  width: 100,
-                  height: 100,
-                  fit: BoxFit.cover,
+      body: Container(
+        color: Colors.white,
+        child: Padding(
+          padding: EdgeInsets.all(10.0),
+          child: Column(
+            children: <Widget>[
+              Text('Secure Checkout', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black)),
+              SizedBox(height: 20),
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.black),
+                  borderRadius: BorderRadius.circular(10),
                 ),
-                Image.network(
-                  'https://api.logobank.uz/media/logos_preview/Uzcard-01.png',
-                  width: 100,
-                  height: 100,
-                  fit: BoxFit.cover,
-                ),
-              ],
-            ),
-            Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.purple),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: ListTile(
-                leading: Icon(Icons.credit_card),
-                title: TextField(
-                  decoration: InputDecoration(
-                    labelText: 'Enter Card Number',
-                    border: InputBorder.none,
+                child: ListTile(
+                  leading: Icon(Icons.credit_card, color: Colors.black),
+                  title: TextField(
+                    decoration: InputDecoration(
+                      labelText: 'Enter Card Number',
+                      labelStyle: TextStyle(color: Colors.black),
+                      border: InputBorder.none,
+                    ),
+                    keyboardType: TextInputType.number,
+                    onChanged: (value) {
+                      setState(() {
+                        cardNumber = value;
+                      });
+                    },
                   ),
-                  keyboardType: TextInputType.number,
-                  onChanged: (value) {
-                    setState(() {
-                      cardNumber = value;
-                    });
-                  },
+                  trailing: Text('Total: \$' + total.toString(), style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black)),
                 ),
               ),
-            ),
-            SwitchListTile(
-              title: Text("Save this card"),
-              subtitle: Text("You agree to the terms of storage of information on cards."),
-              value: _isSwitched,
-              onChanged: (value) {
-                setState(() {
-                  _isSwitched = value;
-                });
-              },
-
-            ),
-            Spacer(),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                primary: Colors.purple,
-                onPrimary: Colors.white,
+              SwitchListTile(
+                title: Text("Remember this card", style: TextStyle(color: Colors.black)),
+                subtitle: Text("By selecting this, you agree to the terms of card information storage.", style: TextStyle(color: Colors.black)),
+                value: _isSwitched,
+                onChanged: (value) {
+                  setState(() {
+                    _isSwitched = value;
+                  });
+                },
+                activeColor: Colors.green,
               ),
-              onPressed: () {},
-              child: Text('Pay '),
-            ),
-            SizedBox(height: 20),
-          ],
+              Spacer(),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.green,
+                  onPrimary: Colors.white,
+                ),
+                onPressed: () {},
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Icon(Icons.payment, color: Colors.white),
+                    SizedBox(width: 10),
+                    Text('Proceed to Pay'),
+                    SizedBox(width: 10),
+                  ],
+                ),
+              ),
+              SizedBox(height: 20),
+            ],
+          ),
         ),
       ),
     );
