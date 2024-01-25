@@ -10,7 +10,7 @@ class RegistrationForm extends StatefulWidget {
 
 class _RegistrationFormState extends State<RegistrationForm> {
   final _formKey = GlobalKey<FormState>();
-  final _firestore = FirebaseFirestore.instance;
+
 
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
@@ -19,9 +19,19 @@ class _RegistrationFormState extends State<RegistrationForm> {
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _confirmPasswordController = TextEditingController();
 
+  Future<bool> isEmailExists(String email) async {
+    final result = await FirebaseFirestore.instance
+        .collection('users')
+        .where('email', isEqualTo: email)
+        .get();
+
+    return result.docs.isNotEmpty;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -55,17 +65,28 @@ class _RegistrationFormState extends State<RegistrationForm> {
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: TextFormField(
-                      controller: _emailController,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.white, width: 2.0),
-                        ),
-                        prefixIcon: Icon(Icons.email, color: Colors.white70),
-                        labelText: 'Email',
-                        labelStyle: TextStyle(color: Colors.white70),
-                      ),
+                    child: Builder(
+                      builder: (BuildContext context) {
+                        return TextFormField(
+                          controller: _emailController,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.white, width: 2.0),
+                            ),
+                            prefixIcon: Icon(Icons.email, color: Colors.white70),
+                            labelText: 'Email',
+                            labelStyle: TextStyle(color: Colors.white70),
+                          ),
+                          onChanged: (value) async {
+                            if (await isEmailExists(value)) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text('This email is already in use.')),
+                              );
+                            }
+                          },
+                        );
+                      },
                     ),
                   ),
                   Padding(
@@ -152,18 +173,34 @@ class _RegistrationFormState extends State<RegistrationForm> {
                           MaterialPageRoute(builder: (context) => SignInScreen()),
                         );
                       } on FirebaseAuthException catch (e) {
+                        String errorMessage;
                         if (e.code == 'weak-password') {
-                          print('The password provided is too weak.');
+                          errorMessage = 'Password is weak.';
                         } else if (e.code == 'email-already-in-use') {
-                          print('The account already exists for that email.');
+                          errorMessage = 'This email is already exist.';
+                        } else {
+                          errorMessage = 'Something went wrong.';
                         }
-                      } catch (e) {
-                        print('some thing wrong ');
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              content: Text(errorMessage),
+                              actions: <Widget>[
+                                TextButton(
+                                  child: Text('Close'),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        );
                       }
                     },
                     child: Text('Submit'),
                   )
-
                 ],
               ),
             ),

@@ -85,7 +85,7 @@ class SignInScreen extends StatelessWidget {
                         );
                         print(userCredential.user!.uid); // This is the user ID
                         if (userCredential.user != null) {
-                          Navigator.push(
+                          Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(builder: (context) => HomePage()),
                           );
@@ -113,14 +113,6 @@ class SignInScreen extends StatelessWidget {
                           }
                         },
                       ),
-                      IconButton(
-                        icon: Icon(Icons.facebook, size: 36.0, color: Colors.blue),
-                        onPressed: () {
-                          // Handle Facebook sign in
-                        },
-                      ),
-
-
                     ],
                   ),
                   SizedBox(height: 50),
