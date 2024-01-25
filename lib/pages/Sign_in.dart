@@ -1,14 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'CustomButton.dart';
 import 'CustomTextField.dart';
 import 'Sign_up.dart';
 import 'home_page.dart';
+import 'package:icons_plus/icons_plus.dart';
+
 
 class SignInScreen extends StatelessWidget {
-  final _auth = FirebaseAuth.instance; // Initialize FirebaseAuth
+  final _auth = FirebaseAuth.instance;
   late String email;
   late String password;
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
+
+
+  Future<UserCredential> signInWithGoogle(BuildContext context) async {
+    final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+    final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
+
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth?.accessToken,
+      idToken: googleAuth?.idToken,
+    );
+
+    final userCredential = await _auth.signInWithCredential(credential);
+
+    // Navigate to the main page after a successful sign-in
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (context) => HomePage()),
+    );
+
+    return userCredential;
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -77,9 +102,25 @@ class SignInScreen extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
-                      Icon(Icons.facebook, size: 36.0, color: Colors.blue),
-                      Icon(Icons.air, size: 36.0, color: Colors.blue),
-                      Icon(Icons.g_translate, size: 36.0, color: Colors.blue),
+                      IconButton(
+                        icon: Icon(Bootstrap.google, size: 36.0, color: Colors.blue),
+                        onPressed: () async {
+                          try {
+                            final user = await signInWithGoogle(context);
+                            print('Signed in with Google: ${user.user?.displayName}');
+                          } catch (e) {
+                            print(e);
+                          }
+                        },
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.facebook, size: 36.0, color: Colors.blue),
+                        onPressed: () {
+                          // Handle Facebook sign in
+                        },
+                      ),
+
+
                     ],
                   ),
                   SizedBox(height: 50),
