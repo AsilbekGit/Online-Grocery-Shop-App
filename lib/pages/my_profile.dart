@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class ProfilePage extends StatefulWidget {
   final String userId;
@@ -12,6 +13,7 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -32,46 +34,75 @@ class _ProfilePageState extends State<ProfilePage> {
               setState(() {});
             },
           ),
+          IconButton(
+            icon: Icon(Icons.exit_to_app),
+            onPressed: () {
+              // Call a function to handle logout
+              _logout();
+            },
+          ),
         ],
       ),
       body: FutureBuilder<DocumentSnapshot>(
         future: _firestore.collection('users').doc(widget.userId).get(),
         builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
           if (snapshot.hasError) {
-            return Text("Something went wrong");
+            return Center(child: Text("Something went wrong"));
           }
 
           if (snapshot.connectionState == ConnectionState.done) {
             Map<String, dynamic> data = snapshot.data!.data() as Map<String, dynamic>;
-            return Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: ListView(
-                children: <Widget>[
-                  ListTile(
-                    title: Text("Name", style: TextStyle(color: Colors.blue)),
-                    subtitle: Text("${data['fullName']}", style: TextStyle(fontSize: 18)),
-                  ),
-                  ListTile(
-                    title: Text("Email", style: TextStyle(color: Colors.blue)),
-                    subtitle: Text("${data['email']}", style: TextStyle(fontSize: 18)),
-                  ),
-                  ListTile(
-                    title: Text("Phone", style: TextStyle(color: Colors.blue)),
-                    subtitle: Text("${data['phoneNumber']}", style: TextStyle(fontSize: 18)),
-                  ),
-                  ListTile(
-                    title: Text("Address", style: TextStyle(color: Colors.blue)),
-                    subtitle: Text("${data['address']}", style: TextStyle(fontSize: 18)),
-                  ),
-                ],
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: ListView(
+                  children: <Widget>[
+                    ListTile(
+                      title: Text("Name", style: TextStyle(color: Colors.blue)),
+                      subtitle: Text("${data['fullName']}", style: TextStyle(fontSize: 18)),
+                    ),
+                    ListTile(
+                      title: Text("Email", style: TextStyle(color: Colors.blue)),
+                      subtitle: Text("${data['email']}", style: TextStyle(fontSize: 18)),
+                    ),
+                    ListTile(
+                      title: Text("Phone", style: TextStyle(color: Colors.blue)),
+                      subtitle: Text("${data['phoneNumber']}", style: TextStyle(fontSize: 18)),
+                    ),
+                    ListTile(
+                      title: Text("Address", style: TextStyle(color: Colors.blue)),
+                      subtitle: Text("${data['address']}", style: TextStyle(fontSize: 18)),
+                    ),
+                  ],
+                ),
               ),
             );
           }
+
+          return Center(child: CircularProgressIndicator());
+        },
+      ),
+    );
+  }
 
           return const CircularProgressIndicator();
         },
       ),
     );
+  }
+
+  // Function to handle logout
+  void _logout() async {
+    try {
+      // Sign out the user
+      await _auth.signOut();
+
+      // Navigate to the login page (assuming you have a LoginPage)
+      Navigator.pushReplacementNamed(context, '/login');
+    } catch (e) {
+      // Handle errors (e.g., display an error message)
+      print("Error during logout: $e");
+    }
   }
 }
 
@@ -96,6 +127,15 @@ class _EditProfilePageState extends State<EditProfilePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Edit Profile"),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.exit_to_app),
+            onPressed: () {
+              // Call a function to handle logout
+              _logout();
+            },
+          ),
+        ],
       ),
       body: FutureBuilder<DocumentSnapshot>(
         future: FirebaseFirestore.instance.collection('users').doc(widget.userId).get(),
@@ -150,6 +190,20 @@ class _EditProfilePageState extends State<EditProfilePage> {
         },
       ),
     );
+  }
+
+  // Function to handle logout
+  void _logout() async {
+    try {
+      // Sign out the user
+      await FirebaseAuth.instance.signOut();
+
+      // Navigate to the login page (assuming you have a LoginPage)
+      Navigator.pushReplacementNamed(context, '/login');
+    } catch (e) {
+      // Handle errors (e.g., display an error message)
+      print("Error during logout: $e");
+    }
   }
 
   // Function to update the profile in the database
