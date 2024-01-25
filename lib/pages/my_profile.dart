@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import 'Sign_in.dart';
+
 class ProfilePage extends StatefulWidget {
   final String userId;
 
@@ -90,7 +92,7 @@ class _ProfilePageState extends State<ProfilePage> {
       await _auth.signOut();
 
       // Navigate to the login page (assuming you have a LoginPage)
-      Navigator.pushReplacementNamed(context, '/login');
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (content) => SignInScreen()));
     } catch (e) {
       // Handle errors (e.g., display an error message)
       print("Error during logout: $e");
@@ -108,6 +110,7 @@ class EditProfilePage extends StatefulWidget {
 }
 
 class _EditProfilePageState extends State<EditProfilePage> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   // Add TextEditingController for each field
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
