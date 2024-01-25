@@ -188,10 +188,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
   void _logout() async {
     try {
       // Sign out the user
-      await FirebaseAuth.instance.signOut();
+      await _auth.signOut();
 
       // Navigate to the login page (assuming you have a LoginPage)
-      Navigator.pushReplacementNamed(context, '/login');
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (content) => SignInScreen()));
     } catch (e) {
       // Handle errors (e.g., display an error message)
       print("Error during logout: $e");
