@@ -21,53 +21,47 @@ class _ProfilePageState extends State<ProfilePage> {
         actions: [
           IconButton(
             icon: Icon(Icons.edit),
-            onPressed: () {
+            onPressed: () async {
               // Navigate to the profile editing screen
-              Navigator.push(
+              await Navigator.push(
                 context,
-                MaterialPageRoute(
-                    builder: (context) =>
-                        EditProfilePage(userId: widget.userId)),
+                MaterialPageRoute(builder: (context) => EditProfilePage(userId: widget.userId)),
               );
+
+              // After returning from the EditProfilePage, trigger a rebuild
+              setState(() {});
             },
           ),
         ],
       ),
       body: FutureBuilder<DocumentSnapshot>(
         future: _firestore.collection('users').doc(widget.userId).get(),
-        builder:
-            (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+        builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
           if (snapshot.hasError) {
             return Text("Something went wrong");
           }
 
           if (snapshot.connectionState == ConnectionState.done) {
-            Map<String, dynamic> data =
-                snapshot.data!.data() as Map<String, dynamic>;
+            Map<String, dynamic> data = snapshot.data!.data() as Map<String, dynamic>;
             return Padding(
               padding: const EdgeInsets.all(16.0),
               child: ListView(
                 children: <Widget>[
                   ListTile(
                     title: Text("Name", style: TextStyle(color: Colors.blue)),
-                    subtitle: Text("${data['fullName']}",
-                        style: TextStyle(fontSize: 18)),
+                    subtitle: Text("${data['fullName']}", style: TextStyle(fontSize: 18)),
                   ),
                   ListTile(
                     title: Text("Email", style: TextStyle(color: Colors.blue)),
-                    subtitle: Text("${data['email']}",
-                        style: TextStyle(fontSize: 18)),
+                    subtitle: Text("${data['email']}", style: TextStyle(fontSize: 18)),
                   ),
                   ListTile(
                     title: Text("Phone", style: TextStyle(color: Colors.blue)),
-                    subtitle: Text("${data['phoneNumber']}",
-                        style: TextStyle(fontSize: 18)),
+                    subtitle: Text("${data['phoneNumber']}", style: TextStyle(fontSize: 18)),
                   ),
                   ListTile(
-                    title:
-                        Text("Address", style: TextStyle(color: Colors.blue)),
-                    subtitle: Text("${data['address']}",
-                        style: TextStyle(fontSize: 18)),
+                    title: Text("Address", style: TextStyle(color: Colors.blue)),
+                    subtitle: Text("${data['address']}", style: TextStyle(fontSize: 18)),
                   ),
                 ],
               ),
@@ -104,19 +98,14 @@ class _EditProfilePageState extends State<EditProfilePage> {
         title: const Text("Edit Profile"),
       ),
       body: FutureBuilder<DocumentSnapshot>(
-        future: FirebaseFirestore.instance
-            .collection('users')
-            .doc(widget.userId)
-            .get(),
-        builder:
-            (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+        future: FirebaseFirestore.instance.collection('users').doc(widget.userId).get(),
+        builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
           if (snapshot.hasError) {
             return Text("Something went wrong");
           }
 
           if (snapshot.connectionState == ConnectionState.done) {
-            Map<String, dynamic> data =
-                snapshot.data!.data() as Map<String, dynamic>;
+            Map<String, dynamic> data = snapshot.data!.data() as Map<String, dynamic>;
 
             // Populate the text controllers with existing data
             _nameController.text = data['fullName'];
@@ -173,21 +162,28 @@ class _EditProfilePageState extends State<EditProfilePage> {
       String newAddress = _addressController.text;
 
       // Update the user document in the 'users' collection
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(widget.userId)
-          .update({
+      await FirebaseFirestore.instance.collection('users').doc(widget.userId).update({
         'fullName': newName,
         'email': newEmail,
         'phoneNumber': newPhone,
         'address': newAddress,
       });
 
-      // Navigate back to the profile page
+      // Show a snackbar to indicate successful update
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Profile updated successfully')),
+      );
+
+      // Navigate back to the previous screen
       Navigator.pop(context);
     } catch (e) {
       // Handle errors (e.g., display an error message)
       print("Error updating profile: $e");
+
+      // Show a snackbar with an error message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to update profile. Please try again later.')),
+      );
     }
   }
 }
