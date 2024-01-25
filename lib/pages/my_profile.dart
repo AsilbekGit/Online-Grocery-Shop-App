@@ -47,43 +47,35 @@ class _ProfilePageState extends State<ProfilePage> {
         future: _firestore.collection('users').doc(widget.userId).get(),
         builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
           if (snapshot.hasError) {
-            return Center(child: Text("Something went wrong"));
+            return Text("Something went wrong");
           }
 
           if (snapshot.connectionState == ConnectionState.done) {
             Map<String, dynamic> data = snapshot.data!.data() as Map<String, dynamic>;
-            return Center(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: ListView(
-                  children: <Widget>[
-                    ListTile(
-                      title: Text("Name", style: TextStyle(color: Colors.blue)),
-                      subtitle: Text("${data['fullName']}", style: TextStyle(fontSize: 18)),
-                    ),
-                    ListTile(
-                      title: Text("Email", style: TextStyle(color: Colors.blue)),
-                      subtitle: Text("${data['email']}", style: TextStyle(fontSize: 18)),
-                    ),
-                    ListTile(
-                      title: Text("Phone", style: TextStyle(color: Colors.blue)),
-                      subtitle: Text("${data['phoneNumber']}", style: TextStyle(fontSize: 18)),
-                    ),
-                    ListTile(
-                      title: Text("Address", style: TextStyle(color: Colors.blue)),
-                      subtitle: Text("${data['address']}", style: TextStyle(fontSize: 18)),
-                    ),
-                  ],
-                ),
+            return Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: ListView(
+                children: <Widget>[
+                  ListTile(
+                    title: Text("Name", style: TextStyle(color: Colors.blue)),
+                    subtitle: Text("${data['fullName']}", style: TextStyle(fontSize: 18)),
+                  ),
+                  ListTile(
+                    title: Text("Email", style: TextStyle(color: Colors.blue)),
+                    subtitle: Text("${data['email']}", style: TextStyle(fontSize: 18)),
+                  ),
+                  ListTile(
+                    title: Text("Phone", style: TextStyle(color: Colors.blue)),
+                    subtitle: Text("${data['phoneNumber']}", style: TextStyle(fontSize: 18)),
+                  ),
+                  ListTile(
+                    title: Text("Address", style: TextStyle(color: Colors.blue)),
+                    subtitle: Text("${data['address']}", style: TextStyle(fontSize: 18)),
+                  ),
+                ],
               ),
             );
           }
-
-          return Center(child: CircularProgressIndicator());
-        },
-      ),
-    );
-  }
 
           return const CircularProgressIndicator();
         },
