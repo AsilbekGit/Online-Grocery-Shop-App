@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -19,6 +18,20 @@ class _ProfilePageState extends State<ProfilePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Profile Page"),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.edit),
+            onPressed: () {
+              // Navigate to the profile editing screen
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        EditProfilePage(userId: widget.userId)),
+              );
+            },
+          ),
+        ],
       ),
       body: FutureBuilder<DocumentSnapshot>(
         future: _firestore.collection('users').doc(widget.userId).get(),
@@ -29,26 +42,32 @@ class _ProfilePageState extends State<ProfilePage> {
           }
 
           if (snapshot.connectionState == ConnectionState.done) {
-            Map<String, dynamic> data = snapshot.data!.data() as Map<String, dynamic>;
+            Map<String, dynamic> data =
+                snapshot.data!.data() as Map<String, dynamic>;
             return Padding(
               padding: const EdgeInsets.all(16.0),
               child: ListView(
                 children: <Widget>[
                   ListTile(
                     title: Text("Name", style: TextStyle(color: Colors.blue)),
-                    subtitle: Text("${data['fullName']}", style: TextStyle(fontSize: 18)),
+                    subtitle: Text("${data['fullName']}",
+                        style: TextStyle(fontSize: 18)),
                   ),
                   ListTile(
                     title: Text("Email", style: TextStyle(color: Colors.blue)),
-                    subtitle: Text("${data['email']}", style: TextStyle(fontSize: 18)),
+                    subtitle: Text("${data['email']}",
+                        style: TextStyle(fontSize: 18)),
                   ),
                   ListTile(
                     title: Text("Phone", style: TextStyle(color: Colors.blue)),
-                    subtitle: Text("${data['phoneNumber']}", style: TextStyle(fontSize: 18)),
+                    subtitle: Text("${data['phoneNumber']}",
+                        style: TextStyle(fontSize: 18)),
                   ),
                   ListTile(
-                    title: Text("Address", style: TextStyle(color: Colors.blue)),
-                    subtitle: Text("${data['address']}", style: TextStyle(fontSize: 18)),
+                    title:
+                        Text("Address", style: TextStyle(color: Colors.blue)),
+                    subtitle: Text("${data['address']}",
+                        style: TextStyle(fontSize: 18)),
                   ),
                 ],
               ),
@@ -59,5 +78,116 @@ class _ProfilePageState extends State<ProfilePage> {
         },
       ),
     );
+  }
+}
+
+class EditProfilePage extends StatefulWidget {
+  final String userId;
+
+  EditProfilePage({Key? key, required this.userId}) : super(key: key);
+
+  @override
+  _EditProfilePageState createState() => _EditProfilePageState();
+}
+
+class _EditProfilePageState extends State<EditProfilePage> {
+  // Add TextEditingController for each field
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _addressController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Edit Profile"),
+      ),
+      body: FutureBuilder<DocumentSnapshot>(
+        future: FirebaseFirestore.instance
+            .collection('users')
+            .doc(widget.userId)
+            .get(),
+        builder:
+            (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+          if (snapshot.hasError) {
+            return Text("Something went wrong");
+          }
+
+          if (snapshot.connectionState == ConnectionState.done) {
+            Map<String, dynamic> data =
+                snapshot.data!.data() as Map<String, dynamic>;
+
+            // Populate the text controllers with existing data
+            _nameController.text = data['fullName'];
+            _emailController.text = data['email'];
+            _phoneController.text = data['phoneNumber'];
+            _addressController.text = data['address'];
+
+            return Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                children: <Widget>[
+                  TextField(
+                    controller: _nameController,
+                    decoration: InputDecoration(labelText: "Name"),
+                  ),
+                  TextField(
+                    controller: _emailController,
+                    decoration: InputDecoration(labelText: "Email"),
+                  ),
+                  TextField(
+                    controller: _phoneController,
+                    decoration: InputDecoration(labelText: "Phone"),
+                  ),
+                  TextField(
+                    controller: _addressController,
+                    decoration: InputDecoration(labelText: "Address"),
+                  ),
+                  SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () {
+                      // Call a function to update the profile in the database
+                      _updateProfile();
+                    },
+                    child: Text("Save Changes"),
+                  ),
+                ],
+              ),
+            );
+          }
+
+          return const CircularProgressIndicator();
+        },
+      ),
+    );
+  }
+
+  // Function to update the profile in the database
+  void _updateProfile() async {
+    try {
+      // Get the updated values from text controllers
+      String newName = _nameController.text;
+      String newEmail = _emailController.text;
+      String newPhone = _phoneController.text;
+      String newAddress = _addressController.text;
+
+      // Update the user document in the 'users' collection
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(widget.userId)
+          .update({
+        'fullName': newName,
+        'email': newEmail,
+        'phoneNumber': newPhone,
+        'address': newAddress,
+      });
+
+      // Navigate back to the profile page
+      Navigator.pop(context);
+    } catch (e) {
+      // Handle errors (e.g., display an error message)
+      print("Error updating profile: $e");
+    }
   }
 }
