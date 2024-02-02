@@ -13,7 +13,7 @@ import 'model/cart_model.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options:DefaultFirebaseOptions.currentPlatform);
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(
     ChangeNotifierProvider(
       create: (context) => CartModel(),
@@ -32,31 +32,39 @@ class MyApp extends StatelessWidget {
       ),
       debugShowCheckedModeBanner: false,
       home: FutureBuilder(
-        future: checkFirstSeen(),
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
-          if (snapshot.hasData) {
-            if (snapshot.data) {
-              return IntroScreen();
-            } else {
-              return SignInScreen();
-            }
-          } else {
+        future: checkSignInStatus(),
+        builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
             return CircularProgressIndicator();
+          } else if (snapshot.hasError) {
+            // Handle error
+            return Center(
+              child: Text('Error occurred!'),
+            );
+          } else {
+            // If the user is signed in, show the main page
+            // Otherwise, show the appropriate screen based on whether the user has seen the app before
+            return snapshot.data ?? false ? HomePage() : IntroScreen();
           }
         },
       ),
     );
   }
 
-  Future<bool> checkFirstSeen() async {
+  Future<bool> checkSignInStatus() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool _seen = (prefs.getBool('seen') ?? false);
+    bool _signedIn = (prefs.getBool('signedIn') ?? false);
 
-    if (_seen) {
-      return false;
-    } else {
-      await prefs.setBool('seen', true);
+    if (_signedIn) {
       return true;
+    } else {
+      if (_seen) {
+        return false;
+      } else {
+        await prefs.setBool('seen', true);
+        return true;
+      }
     }
   }
 }
