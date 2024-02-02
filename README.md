@@ -1062,8 +1062,6 @@ The fourth child of the `Column` widget is a `GestureDetector` widget that navig
 
 **My_profile.dart file:**
 
-Sure, I’d be happy to explain the code in the `my_profile.dart` file of your Flutter app project, “Online Grocery Shopping and Delivery App”. Here’s a breakdown:
-
 class ProfilePage extends StatefulWidget {
 
 final String userId;
@@ -1533,9 +1531,6 @@ class PaymentSuccessScreen extends StatelessWidget {
 This class `PaymentSuccessScreen` extends `StatelessWidget`, meaning it’s a widget that describes part of the user interface which doesn’t change over time. The `build` method returns a widget tree that describes how the payment success screen should be displayed on screen. It creates a `Scaffold` widget with an `AppBar` and a `body` that contains a `Column` widget. The `Column` widget arranges its children vertically: an `Icon` widget displaying a check circle outline, a `Text` widget displaying “Payment Successful!”, a `SizedBox` for spacing, and an `ElevatedButton` widget that navigates to the `DeliveryPage` when pressed.
 
 Sign_up.dart file:
-
-Sure, I’d be happy to explain the code in the `sign_up.dart` file of your Flutter app project, “Online Grocery Shopping and Delivery App”. Here’s a breakdown:
-
 
 ```
 class RegistrationForm extends StatefulWidget {
