@@ -1,30 +1,159 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:project/main.dart';
-
+import 'package:project/my_profile.dart'; // Assuming ProfilePage and EditProfilePage are in this file
+import 'package:project/sign_in.dart';
+import 'package:mockito/mockito.dart';
+import 'CustomButton.dart';
+import 'CustomTextField.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:cloud_firestore_mocks/cloud_firestore_mocks.dart';
+import 'package:your_app/paymentPage.dart';
+import 'package:your_app/Sign_up.dart';
+import 'package:your_app/Sign_in.dart';
+import 'package:provider/provider.dart';
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget( MyApp());
+  group('App Widget Tests', () {
+    // Test for CustomButton
+    testWidgets('CustomButton displays text and responds to tap', (WidgetTester tester) async {
+      bool buttonPressed = false;
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: CustomButton(
+            onPressed: () {
+              buttonPressed = true;
+            },
+            text: 'Tap Me',
+            color: Colors.red,
+            textColor: Colors.white,
+          ),
+        ),
+      ));
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+      expect(find.text('Tap Me'), findsOneWidget);
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+      await tester.tap(find.byType(CustomButton));
+      await tester.pump();
+
+      expect(buttonPressed, true);
+    });
+
+    // Test for CustomTextField
+    testWidgets('CustomTextField updates and displays text', (WidgetTester tester) async {
+      String textFieldInput = '';
+
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: CustomTextField(
+            labelText: 'Enter Text',
+            prefixIcon: Icons.person,
+            onChanged: (value) {
+              textFieldInput = value;
+            },
+          ),
+        ),
+      ));
+
+      const String testInput = 'Test Input';
+
+      expect(find.byType(CustomTextField), findsOneWidget);
+
+      await tester.enterText(find.byType(CustomTextField), testInput);
+      await tester.pump();
+
+      expect(textFieldInput, equals(testInput));
+    });
+
+    // Test for Profile Update on EditProfilePage
+    testWidgets('EditProfilePage allows profile updates', (WidgetTester tester) async {
+      // Assuming we're using a Mock for FirebaseAuth and FirebaseFirestore
+      final MockFirebaseAuth mockAuth = MockFirebaseAuth();
+      final MockFirebaseFirestore mockFirestore = MockFirebaseFirestore();
+
+      // Initialize Firebase
+      await Firebase.initializeApp();
+
+      // Populate initial mock data
+      // You need to replace this with actual mock setup code
+      when(mockFirestore.collection('users').doc(any)).thenReturn(/* Mock Document Reference */);
+
+      await tester.pumpWidget(MaterialApp(
+        home: EditProfilePage(userId: 'testUser'),
+      ));
+
+      // Populate fields with test data
+      await tester.enterText(find.byType(TextField).at(0), 'New Name');
+      await tester.enterText(find.byType(TextField).at(1), 'newemail@test.com');
+      await tester.enterText(find.byType(TextField).at(2), '1234567890');
+      await tester.enterText(find.byType(TextField).at(3), 'New Address');
+
+      // Tap the save button
+      await tester.tap(find.text('Save Changes'));
+      await tester.pumpAndSettle();
+
+      // Assuming update is successful, verify if a Snackbar appears or check for any UI changes
+      // This part of the test might need to be adjusted based on actual app behavior
+      expect(find.byType(SnackBar), findsOneWidget);
+      expect(find.text('Profile updated successfully'), findsOneWidget);
+    });
+  });
+  testWidgets('Navigating to PaymentPage displays the page', (WidgetTester tester) async {
+    // Create a mock CartModel or use a real instance if appropriate
+    final mockCartModel = CartModel();
+
+    // Define a test app widget
+    Widget testWidget = MaterialApp(
+      home: Scaffold(
+        body: Provider<CartModel>(
+          create: (context) => mockCartModel,
+          child: Builder(
+            builder: (context) => ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => PaymentPage()),
+                );
+              },
+              child: Text('Go to Payment'),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    // Build our app and trigger a frame
+    await tester.pumpWidget(testWidget);
+
+    // Tap the button to navigate to PaymentPage
+    await tester.tap(find.text('Go to Payment'));
+    await tester.pumpAndSettle(); // Wait for the navigation to complete
+
+    // Verify that PaymentPage is displayed
+    expect(find.byType(PaymentPage), findsOneWidget);
+    expect(find.text('Secure Payment'), findsOneWidget); // Checking for AppBar title
+  });
+  testWidgets('Navigating from RegistrationForm to SignInScreen after successful registration', (WidgetTester tester) async {
+    // Wrap RegistrationForm in a MaterialApp to enable navigation.
+    await tester.pumpWidget(MaterialApp(
+      home: RegistrationForm(),
+      routes: {
+        '/signInScreen': (context) => SignInScreen(), // Define the route for navigation
+      },
+    ));
+
+    // Simulate user input in the registration form fields...
+    await tester.enterText(find.byType(TextFormField).at(0), 'Test Name');
+    await tester.enterText(find.byType(TextFormField).at(1), 'test@example.com');
+    // Continue for other fields as necessary...
+
+    // Find the submit button and tap it. Adjust the finder if your button doesn't use text or needs a more specific finder.
+    await tester.tap(find.text('Submit'));
+    await tester.pumpAndSettle(); // Wait for animations and futures to complete.
+
+    // Verify that after tapping submit, we navigate to the SignInScreen.
+    expect(find.byType(SignInScreen), findsOneWidget);
   });
 }
+
+class MockFirebaseAuth extends Mock implements FirebaseAuth {}
+class MockFirebaseFirestore extends Mock implements FirebaseFirestore {}
