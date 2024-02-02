@@ -1,15 +1,16 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:project/my_profile.dart'; // Assuming ProfilePage and EditProfilePage are in this file
-import 'package:project/sign_in.dart';
-import 'package:mockito/mockito.dart';
-import 'CustomButton.dart';
-import 'CustomTextField.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:cloud_firestore_mocks/cloud_firestore_mocks.dart';
-import 'package:your_app/paymentPage.dart';
-import 'package:your_app/Sign_up.dart';
-import 'package:your_app/Sign_in.dart';
+import 'package:project/model/cart_model.dart';
+
+import 'package:project/pages/CustomButton.dart';
+import 'package:project/pages/CustomTextField.dart';
+import 'package:project/pages/Sign_in.dart';
+import 'package:project/pages/Sign_up.dart';
+import 'package:project/pages/my_profile.dart';
+import 'package:project/pages/paymentPage.dart';
+
 import 'package:provider/provider.dart';
 void main() {
   group('App Widget Tests', () {
@@ -134,7 +135,8 @@ void main() {
   });
   testWidgets('Navigating from RegistrationForm to SignInScreen after successful registration', (WidgetTester tester) async {
     // Wrap RegistrationForm in a MaterialApp to enable navigation.
-    await tester.pumpWidget(MaterialApp(
+    await tester.pumpWidget(
+        MaterialApp(
       home: RegistrationForm(),
       routes: {
         '/signInScreen': (context) => SignInScreen(), // Define the route for navigation
