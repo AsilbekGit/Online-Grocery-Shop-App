@@ -2,6 +2,10 @@
 
 # Online Grocery Shop App
 
+# Video demonstration of the App
+https://github.com/AsilbekGit/Online-Grocery-Shop-App/assets/115205031/0cd2de81-51ef-4223-80ac-e63c26e369af
+
+
 ## Introduction
 
 Welcome to the Online Grocery Shop App! This mobile application, developed using Flutter in Dart language, aims to make grocery shopping easier and more convenient. It allows users to browse through a wide range of grocery items, add them to their cart, and check out with ease.
