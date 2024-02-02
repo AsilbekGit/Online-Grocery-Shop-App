@@ -8,8 +8,15 @@ class CartModel extends ChangeNotifier {
     ["Banana", "2.50", "lib/images/banana.png", Colors.yellow],
     ["Chicken", "12.80", "lib/images/chicken.png", Colors.brown],
     ["Water", "1.00", "lib/images/water.png", Colors.blue],
-    ["Avocado", "4.00", "lib/images/avocado.png", Colors.pink],
-    ["Water", "1.00", "lib/images/water.png", Colors.purple],
+    ["Dragon Fruit", "3.00", "lib/images/dragon-fruit.png", Colors.red],
+    ["Apple", "2.00", "lib/images/apple.png", Colors.green],
+    ["Butter", "5.00", "lib/images/butter.png", Colors.blue],
+    ["Cabbage", "1.50", "lib/images/cabbage.png", Colors.lightGreen],
+    ["Carrot", "2.00", "lib/images/carrot.png", Colors.orange],
+    ["Cheese", "1.70", "lib/images/cheese.png", Colors.yellow],
+    ["Cupcake", "3.00", "lib/images/cupcake.png", Colors.pink],
+    ["Lemon", "2.00", "lib/images/lemon.png", Colors.yellowAccent],
+    ["Meat 1kg", "5.00", "lib/images/meat.png", Colors.redAccent],
   ];
 
   // list of cart items
